@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Proyecto extremadamente importante</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        radial-gradient(circle at top, #25204a, #090912 70%);
+
+    color: white;
+}
+
+.contenedor {
+    width: min(600px, 90%);
+
+    padding: 35px;
+
+    text-align: center;
+
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.15);
+
+    border-radius: 25px;
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.5);
+}
+
+h1 {
+    margin-top: 0;
+
+    font-size: 32px;
+}
+
+.subtitulo {
+    color: #aaa;
+
+    margin-bottom: 30px;
+}
+
+.frase {
+    min-height: 110px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    border-radius: 15px;
+
+    background: rgba(0,0,0,.3);
+
+    margin-bottom: 25px;
+
+    transition:
+        transform .15s,
+        opacity .15s;
+}
+
+.frase.animar {
+    transform: scale(1.04);
+
+    opacity: .3;
+}
+
+button {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #7c3aed;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+button:hover {
+    background: #8b5cf6;
+
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.contador {
+    margin-top: 18px;
+
+    color: #aaa;
+
+    font-size: 14px;
+}
+
+.barra {
+    width: 100%;
+    height: 8px;
+
+    margin-top: 10px;
+
+    background: #222;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.progreso {
+    width: 0%;
+    height: 100%;
+
+    background: #a78bfa;
+
+    transition: width .2s;
+}
+
+.final {
+    display: none;
+
+    animation: aparecer 1s ease;
+}
+
+.final h2 {
+    font-size: 30px;
+
+    line-height: 1.3;
+}
+
+.final .emoji {
+    font-size: 55px;
+
+    margin-top: 20px;
+}
+
+@keyframes aparecer {
+
+    from {
+        opacity: 0;
+        transform: scale(.7) rotate(-3deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="contenedor">
+
+    <div id="juego">
+
+        <h1>
+            🤨 Presiona el botón
+        </h1>
+
+        <p class="subtitulo">
+            Solo son unos cuantos clics. ¿Qué podría salir mal?
+        </p>
+
+        <div
+            class="frase"
+            id="frase">
+
+            Presiona el botón para comenzar...
+
+        </div>
+
+        <button id="boton">
+            HACER CLIC
+        </button>
+
+        <div class="contador" id="contador">
+            0 / 100
+        </div>
+
+        <div class="barra">
+            <div
+                class="progreso"
+                id="progreso">
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="final" id="final">
+
+        <h1>
+            🎉 ¡FELICIDADES!
+        </h1>
+
+        <h2>
+            Por esto y más razones es por la que,
+            aun intentándolo, no volverás con ella XD
+        </h2>
+
+        <div class="emoji">
+            😂🫵
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   100 FRASES
+========================================= */
+
+const frases = [
+
+"Calculando una respuesta que no existe...",
+
+"Un momento, estoy consultando con la señora de la esquina.",
+
+"Procesando... pero despacio porque es lunes.",
+
+"¿Seguro que quieres continuar?",
+
+"El botón está trabajando más que tú.",
+
+"Buscando dignidad... 0 resultados.",
+
+"Espera, se me cayó el WiFi imaginario.",
+
+"Analizando tus decisiones... esto no pinta bien.",
+
+"Contactando con el departamento de cosas innecesarias.",
+
+"Un técnico ya fue enviado. No sabe qué hacer.",
+
+"Procesando emociones que nadie pidió.",
+
+"El sistema está pensando en sus errores.",
+
+"Por favor espere mientras finjo saber qué hago.",
+
+"Consultando a una paloma especializada.",
+
+"Calculando la probabilidad de que sigas haciendo clic.",
+
+"Advertencia: este botón tiene problemas de autoestima.",
+
+"Descargando paciencia... 2%.",
+
+"El servidor está comiendo una empanada.",
+
+"Momento, estoy preguntándole a mi gato.",
+
+"Revisando el manual que nunca leí.",
+
+"Todo está bajo control. Creo.",
+
+"Buscando una razón para detenerte.",
+
+"No encontramos la razón. Continúa.",
+
+"Preparando algo completamente innecesario.",
+
+"El botón acaba de suspirar.",
+
+"Analizando... análisis cancelado.",
+
+"Esperando que esto tenga sentido.",
+
+"El universo tampoco sabe qué va a pasar.",
+
+"Procesando tu nivel de terquedad.",
+
+"Confirmando que realmente vas a seguir.",
+
+"Sí. Sigues haciendo clic.",
+
+"Esto ya parece una enfermedad.",
+
+"Un clic más y posiblemente nada cambie.",
+
+"Estoy impresionado y preocupado.",
+
+"El botón está empezando a tener miedo.",
+
+"¿No tienes tarea o algo?",
+
+"Pregunta seria: ¿por qué sigues aquí?",
+
+"Buscando una salida de esta situación.",
+
+"Salida no encontrada.",
+
+"Perfecto. Ahora somos cómplices.",
+
+"El sistema solicita vacaciones.",
+
+"Descargando una excusa para continuar.",
+
+"Se ha detectado exceso de tiempo libre.",
+
+"Recalculando absolutamente nada.",
+
+"Un científico acaba de ver esto y renunció.",
+
+"El universo está tomando nota.",
+
+"Esto definitivamente estaba en el plan.",
+
+"Creo que ya perdimos el objetivo inicial.",
+
+"¿Te imaginas hacer 100 clics y que no pase nada?",
+
+"Jajaja imagínate.",
+
+"Tranquilo, todavía falta bastante.",
+
+"No mires el contador.",
+
+"Bueno, míralo si quieres sufrir.",
+
+"El contador tampoco quiere estar aquí.",
+
+"Estamos avanzando. Técnicamente.",
+
+"Progreso: cuestionable.",
+
+"El botón exige respeto.",
+
+"Se ha activado el modo: ¿por qué hago esto?",
+
+"Tu dedo merece una medalla.",
+
+"Tu mouse está pidiendo auxilio.",
+
+"El teclado observa en silencio.",
+
+"Esto ya es compromiso emocional.",
+
+"El sistema ha perdido la fe.",
+
+"Pero tú no.",
+
+"Eso es preocupante.",
+
+"Continuamos porque aparentemente sí.",
+
+"Preparando la siguiente pérdida de tiempo.",
+
+"El departamento de decisiones cuestionables informa:",
+
+"Todo sigue exactamente igual.",
+
+"Excepto tu paciencia.",
+
+"Esa sí está desapareciendo.",
+
+"Estamos entrando en territorio peligroso.",
+
+"Mentira, no pasa nada.",
+
+"Era para asustarte.",
+
+"¿Sigues creyendo que habrá algo bueno?",
+
+"Admiro tu optimismo.",
+
+"Lo necesito para mi próxima crisis.",
+
+"El botón ha desarrollado conciencia.",
+
+"Dice que pares.",
+
+"Yo también.",
+
+"Pero nadie nos escucha.",
+
+"Seguimos.",
+
+"Un clic más para la ciencia.",
+
+"La ciencia no pidió esto.",
+
+"Pero aquí estamos.",
+
+"Estamos cerca. Creo.",
+
+"Bueno... relativamente cerca.",
+
+"El contador está sufriendo.",
+
+"Ya casi... probablemente.",
+
+"Si llegaste hasta aquí, ya es personal.",
+
+"No hay vuelta atrás.",
+
+"El botón recuerda todo.",
+
+"El botón jamás olvida.",
+
+"Tu dedo tampoco olvidará esto.",
+
+"Últimos esfuerzos. Mentira.",
+
+"Cada clic nos acerca a algo.",
+
+"No sé a qué.",
+
+"Pero nos acerca.",
+
+"El final está sospechosamente cerca.",
+
+"¿Listo para descubrir la verdad?",
+
+"Últimos clics.",
+
+"Ahora sí se viene algo.",
+
+"Creo.",
+
+"Tal vez.",
+
+"Probablemente no.",
+
+"UNA ÚLTIMA VEZ...",
+
+"Bueno, todavía no.",
+
+"JAJAJA te falta.",
+
+"Ya casi te tengo.",
+
+"Esto se salió de control.",
+
+"Felicidades, llegaste demasiado lejos."
+
+];
+
+
+/* =========================================
+   VARIABLES
+========================================= */
+
+const boton =
+    document.getElementById("boton");
+
+const frase =
+    document.getElementById("frase");
+
+const contador =
+    document.getElementById("contador");
+
+const progreso =
+    document.getElementById("progreso");
+
+const juego =
+    document.getElementById("juego");
+
+const final =
+    document.getElementById("final");
+
+
+let clics = 0;
+
+
+/* =========================================
+   MEZCLAR LAS FRASES
+========================================= */
+
+/*
+   Fisher-Yates:
+   mezcla las frases para que aparezcan
+   en orden aleatorio y no se repitan.
+*/
+
+let frasesDisponibles = [...frases];
+
+for (let i = frasesDisponibles.length - 1; i > 0; i--) {
+
+    const j =
+        Math.floor(Math.random() * (i + 1));
+
+    [
+        frasesDisponibles[i],
+        frasesDisponibles[j]
+    ] =
+    [
+        frasesDisponibles[j],
+        frasesDisponibles[i]
+    ];
+
+}
+
+
+/* =========================================
+   CLICK
+========================================= */
+
+boton.addEventListener("click", () => {
+
+    clics++;
+
+
+    /* Animación de la frase */
+
+    frase.classList.add("animar");
+
+
+    setTimeout(() => {
+
+        frase.textContent =
+            frasesDisponibles[clics - 1];
+
+        frase.classList.remove("animar");
+
+    }, 100);
+
+
+    /* Contador */
+
+    contador.textContent =
+        clics + " / 100";
+
+
+    /* Barra */
+
+    progreso.style.width =
+        clics + "%";
+
+
+    /* =====================================
+       CLIC 100
+    ===================================== */
+
+    if (clics === 100) {
+
+        boton.disabled = true;
+
+        setTimeout(() => {
+
+            juego.style.display = "none";
+
+            final.style.display = "block";
+
+        }, 800);
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
